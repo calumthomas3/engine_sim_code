@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.io import wavfile
 from scipy.signal import find_peaks
-import csv
+import pandas as pd
 
 
 def fft_analysis(filename):
@@ -10,7 +10,7 @@ def fft_analysis(filename):
     samplerate, data = wavfile.read(filename)
 
     # Set threshold for peaks
-    height_threshold = 200
+    height_threshold = 250
 
     # Normalise the data to the range (-1, 1)
     data = data / (2**15)
@@ -33,8 +33,6 @@ def fft_analysis(filename):
     # Use filename
     savefile = filename[:-4]+'_fft.csv'
 
-    # Frequency Output to a csv file
-    with open(savefile, 'w', newline='') as file:
-        writer = csv.writer(file)
-        for i in int(len(peaks_index)):
-            writer.writerow(peaks_index[i], properties['peak_heights'][i])
+    pd.DataFrame(peaks_index).to_csv(savefile, index=False, header=False)
+
+    return savefile

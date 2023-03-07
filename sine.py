@@ -1,16 +1,14 @@
 import numpy as np
 import math
-import pygame
+
 import time
 import threading
 
-pygame.init()
 
 bits = 16
 sample_rate = 44100
-pygame.mixer.pre_init(sample_rate, bits, allowedchanges=AUDIO_ALLOW_FREQUENCY_CHANGE)
 
-def sine_x(amp, freq, time):
+def sine_x(amp, freq, t):
     return int(round(amp * math.sin(2 * math.pi * freq * time)))
 
 
