@@ -5,9 +5,7 @@ import keyboard
 
 
 # Increase or Decrease RPM
-def on_press(key, freq_range, rpm_range):
-    global freq
-    global rpm
+def on_press(key, freq_range, rpm_range, freq, rpm):
     if key.name == 'up':
         freq_idx = np.searchsorted(freq_range, freq)
         freq = freq_range[min(freq_idx+1, len(freq_range)-1)]
@@ -56,6 +54,10 @@ def stream_signals(frequency_files):
 
 
 def output_stream(rpm_signals):
+    # Initialize the rpm value to 1000
+    rpm_idle = 1000
+    rpm = rpm_idle
+
     # Define the rpm range and corresponding frequency range
     rpm_range = np.arange(1000, 3001, 10)
     freq_range = np.interp(rpm_range, [1000, 3000], [50, 150])
@@ -66,15 +68,15 @@ def output_stream(rpm_signals):
     # Create an instance of the Stream class
     stream = sd.OutputStream(channels=2, blocksize=block_size)
 
+    # Use base frequency of 1000 rpm
+    freq = rpm_signals[0][0]
+
     # Keyboard Interaction
-    keyboard.on_press(on_press, freq_range, rpm_range)
+    keyboard.on_press(on_press(, freq_range, rpm_range, freq, rpm))
 
     # Start the stream
     stream.start()
 
-    # Initialize the rpm value to 1000
-    rpm_idle = 1000
-    rpm = rpm_idle
     # Keep writing the signal to the stream until keyboard interrupt
     try:
         while True:

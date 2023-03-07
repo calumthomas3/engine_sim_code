@@ -27,5 +27,7 @@ for i in range(len(input_files)):
 # Set the signals for each rpm to be stretched and changed in the rpm stream
 rpm_signals = stream_signals(savefiles)
 
+print(rpm_signals)
+
 # Output the signals to the rpm stream
 output_stream(rpm_signals)
