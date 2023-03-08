@@ -72,7 +72,7 @@ def stream_signals(frequency_files):
         # Save the signal to an array dictionary
         rpm_signals[rpm_value] = signal
 
-        savefile = frequency_files[rpm_value][:-4] + '_signal.csv'
+        savefile = frequency_files[rpm_value][:-8] + '_signal.csv'
 
         print('\nFile Created: ' + str(savefile))
 

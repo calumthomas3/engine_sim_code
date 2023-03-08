@@ -2,6 +2,7 @@ import numpy as np
 import keyboard
 import sounddevice as sd
 
+
 # Define the rpm range and corresponding frequency range
 rpm_range = np.arange(1000, 3001, 10)
 freq_range = np.interp(rpm_range, [1000, 3000], [50, 150])
@@ -9,7 +10,7 @@ freq_range = np.interp(rpm_range, [1000, 3000], [50, 150])
 # Define the sample rate and duration of the signal
 sr = 44100
 duration = 1000
-
+kRpm = 1000
 
 def on_press(key):
     global kRpm
@@ -22,19 +23,18 @@ def on_press(key):
 
 def rpm_load(rpmInt):
     global kRpm
-    kRpm+=rpmInt
-    if kRpm>3000:
-        kRpm=3000
-    elif kRpm<1000:
-        kRpm=1000
+    kRpm += rpmInt
+    if kRpm > 3000:
+        kRpm = 3000
+    elif kRpm < 1000:
+        kRpm = 1000
     else:
-        kRpm=kRpm
+        kRpm = kRpm
 
 
-def output_stream(rpmsignals, keyboardinterrupt=None):
+def output_stream(rpmsignals):
     # Initialize the rpm value to 1000
     global kRpm
-
     # Set the blocksize to 2048 samples
     block_size = 2048
 
@@ -43,7 +43,6 @@ def output_stream(rpmsignals, keyboardinterrupt=None):
 
     # Use base frequency of 1000 rpm
     freq = rpmsignals[0][0]
-
 
     # Start the stream
     stream.start()
@@ -60,6 +59,8 @@ def output_stream(rpmsignals, keyboardinterrupt=None):
                     signal_block = rpmsignals[0][i:i + block_size]
                     # Modify the frequency of the sine wave
                     signal_block *= sin_signal
+                    # Change type of signal_block to float32
+                    signal_block = signal_block.astype('float32')
                     stream.write(signal_block)
                     # Print the current rpm value
                     print(f"Current RPM: {kRpm}", end='\r')
@@ -78,7 +79,7 @@ def output_stream(rpmsignals, keyboardinterrupt=None):
                     stream.write(input)
                     # Print the current rpm value
                     print(f"Current RPM: {kRpm}", end='\r')
-
-    except keyboardinterrupt:
+    except KeyboardInterrupt:
+        print('Stopped')
         stream.stop()
-        keyboard.unhook_all()
+        stream.close()

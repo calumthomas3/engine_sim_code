@@ -25,7 +25,7 @@ for i in range(len(input_files)):
         setup(input_files, gear_change_data)
         break
     else:
-        print('\nFiles found '+str(i)+'/'+str(len(input_files)))
+        print('\nFiles found '+str(i+1)+'/'+str(len(input_files)))
 
 # Run the engine
 print('\nRunning Engine')
