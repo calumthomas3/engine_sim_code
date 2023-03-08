@@ -1,11 +1,10 @@
-from tpd_soundfile_to_fft import fft_analysis
-from import_gear_change_data import import_gear_change, gear_change_graph
-import sounddevice
-from play_gear_sound import output_stream, stream_signals
+import os.path
+from Setup import setup
+import pandas as pd
+from play_gear_sound import output_stream, on_press
+import keyboard
 
-devices = sounddevice.query_devices(device=None, kind=None)
-print(devices)
-
+# Define the input files and the gear change data
 input_files = ('sound_files/front_1000.wav',
                'sound_files/front_1500.wav',
                'sound_files/front_2000.wav',
@@ -14,20 +13,29 @@ input_files = ('sound_files/front_1000.wav',
                )
 gear_change_data = '2D_gear_change_profile.xlsx'
 
-ulines_dir, dlines_dir = import_gear_change(gear_change_data)
-
-savefiles = []
+# Check if the files exist for engine running
+check = []
+for i in range(len(input_files)):
+    check.append(input_files[i][:-4]+'_signal.csv')
 
 for i in range(len(input_files)):
-    savefile = fft_analysis(input_files[i])
-    savefiles.append(savefile)
+    if not os.path.isfile(check[i]):
+        print('Files not found: '+str(check[i]))
+        print('\nRunning Setup.py')
+        setup(input_files, gear_change_data)
+        break
+    else:
+        print('\nFiles found '+str(i)+'/'+str(len(input_files)))
 
-# gear_change_graph(ulines_dir, dlines_dir)
+# Run the engine
+print('\nRunning Engine')
 
-# Set the signals for each rpm to be stretched and changed in the rpm stream
-rpm_signals = stream_signals(savefiles)
-
-print(rpm_signals)
-
+rpm_signals = []
+for i in range(len(input_files)):
+    rpm_signals.append(pd.read_csv(check[i], header=None).values.flatten())
+# Initialize the rpm value to 1000
+kRpm = 1000
+# Register the callback function with the keyboard module
+keyboard.on_press(on_press)
 # Output the signals to the rpm stream
 output_stream(rpm_signals)
