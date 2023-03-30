@@ -57,8 +57,6 @@ def gear_change_graph(ulines_dir, dlines_dir):
         # Plot the line with appropriate linestyle
         ax.plot([x_start, x_end], [y_start, y_end], linestyle=linestyle, label=label)
 
-    # Allow the user to click on the graph to select two points for the input line
-    points = plt.ginput(2)
     return graphdata
 
 
@@ -79,20 +77,20 @@ def gear_change_check(points, graphdata, currentgear):
         if intersection_point.geom_type == "Point":
             x, y = intersection_point.x, intersection_point.y
             intersection_points.append((x, y))
-            ax.scatter(x, y, marker="x", s=100, color="green", label=f"Intersection {i}")
+            # ax.scatter(x, y, marker="x", s=100, color="green", label=f"Intersection {i}")
             new_gear = rule
             if new_gear != currentgear:
                 print('change to ' + str(new_gear))
                 currentgear = new_gear
     return currentgear
 
-    print('intersection points: ' + str(intersection_points))
-
-    # Plot the selected points
-    plt.plot(points[0][0], points[0][1], 'go', label='First Point')
-    plt.plot(points[1][0], points[1][1], 'ro', label='Second Point')
-
-    # Show the plot and allow the user to select a new input line
-    plt.legend()
-    plt.show()
-    plt.clf()
+    # print('intersection points: ' + str(intersection_points))
+    #
+    # # Plot the selected points
+    # plt.plot(points[0][0], points[0][1], 'go', label='First Point')
+    # plt.plot(points[1][0], points[1][1], 'ro', label='Second Point')
+    #
+    # # Show the plot and allow the user to select a new input line
+    # plt.legend()
+    # plt.show()
+    # plt.clf()

@@ -1,5 +1,21 @@
-import sounddevice as sd
+import random
 
-class sounddevice.Stream(samplerate=None, blocksize=None, device=None, channels=None, dtype=None,
-    latency=None, extra_settings=None, callback=None, finished_callback=None, clip_off=None,
-    dither_off=None, never_drop_input=None, prime_output_buffers_using_stream_callback=None)
+
+def compress_signal(sample, count):
+    indexed = [item for item in enumerate(sample)]
+    random.shuffle(indexed)
+    trimmed = indexed[:count]
+    trimmed.sort()
+    return [item for index, item in trimmed]
+
+
+#  Chunking function
+def chunks(l, n):
+    for i in xrange(0, len(l), n):
+        yield l[i:i+n]
+
+
+# Resampling function
+def resample(arr, newlength):
+    chunksize = len(arr)/newlength
+    return [np.mean(chunk) for chunk in chunks(arr, chunksize)]
