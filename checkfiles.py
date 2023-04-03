@@ -4,7 +4,7 @@ from Setup import setup
 import numpy as np
 
 
-def check(input_files, gear_change_data, min_rpm, max_rpm, rpm_sectioning):
+def check_files(input_files, gear_change_data, min_rpm, max_rpm, rpm_sectioning):
     # Check if the files exist for engine running
     check = []
     file_checkers = np.arange(min_rpm, max_rpm, rpm_sectioning, dtype=int)

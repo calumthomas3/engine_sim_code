@@ -2,3 +2,4 @@
 # Ignore all .csv files
 *.csv
 *.xlsx
+/Car_Sim/velocity_plot.png

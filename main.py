@@ -3,7 +3,7 @@ import pandas as pd
 from play_gear_sound import output_stream, on_press
 import keyboard
 from joystick import joystick_init, joystick_check
-from checkfiles import check
+from checkfiles import check_files
 
 
 # Define the input files and the gear change data
@@ -24,7 +24,7 @@ rpm_sectioning = 5
 
 # Block Write Method
 # Check if the files exist for engine running
-file_checkers = check(input_files, gear_change_data, min_rpm, max_rpm, rpm_sectioning)
+file_checkers = check_files(input_files, gear_change_data, min_rpm, max_rpm, rpm_sectioning)
 
 # Set Up the engine
 print('\nSet Up Engine')
