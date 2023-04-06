@@ -1,5 +1,5 @@
 from tpd_soundfile_to_fft import fft_analysis, stream_signals, synth_sound_files
-from import_gear_change_data import import_gear_change, gear_change_graph
+from Functions import ImportFunctions, GearFunctions
 import sounddevice
 import pandas as pd
 
@@ -9,7 +9,7 @@ def setup(input_files, gear_change_data, min_rpm, max_rpm, rpm_sectioning):
     devices = sounddevice.query_devices(device=None, kind=None)
     print(devices)
 
-    ulines_dir, dlines_dir = import_gear_change(gear_change_data)
+    ulines_dir, dlines_dir = ImportFunctions.import_gear_change(gear_change_data)
 
     savefiles = []
 
@@ -19,7 +19,7 @@ def setup(input_files, gear_change_data, min_rpm, max_rpm, rpm_sectioning):
 
     print('\nFiles saved')
 
-    graphdata = gear_change_graph(ulines_dir, dlines_dir)
+    graphdata = GearFunctions.gear_change_graph(ulines_dir, dlines_dir)
 
     # Write graphdata to csv file
     pd.DataFrame(graphdata).to_csv('geardata.csv', index=False, header=False)

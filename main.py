@@ -33,9 +33,9 @@ print('\nSet Up Engine')
 joystick_init()
 
 rpm_signals = {}
-for i in range(len(check)):
+for i in range(len(file_checkers)):
     file_checker = file_checkers[i]
-    rpm_signals[file_checker] = pd.read_csv(check[i], header=None).values.flatten()
+    rpm_signals[file_checker] = pd.read_csv(file_checkers[i], header=None).values.flatten()
 graphdata = pd.read_csv('geardata.csv')
 
 # Initialize voltages to 0, gear to 1, and the rpm value to 1000
@@ -54,4 +54,3 @@ joystick_check()
 
 # Output the signals to the rpm stream
 output_stream(rpm_signals)
-

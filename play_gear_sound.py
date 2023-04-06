@@ -2,7 +2,7 @@ import numpy as np
 import keyboard
 import sounddevice as sd
 from gear_sound_functions import compress_signal
-from import_gear_change_data import gear_change_check
+from Functions import gear_change_check
 
 
 # Define the rpm range and corresponding frequency range

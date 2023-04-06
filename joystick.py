@@ -7,6 +7,11 @@ def joystick_init():
     joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
     print(joysticks)
 
+def pygame_init(width, height):
+    # Initialize pygame
+    pygame.init()
+    screen = pygame.display.set_mode((width, height))
+    clock = pygame.time.Clock()
 
 # Make game
 class Player(object):
