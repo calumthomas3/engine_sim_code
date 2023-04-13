@@ -1,3 +1,5 @@
+import os.path
+
 import pygame
 import math
 import numpy as np
@@ -52,6 +54,9 @@ class Car:
 
     # Initialise at Idle - Gear = 1
     gear = 1
+
+    # Define Sound File where sounds are found
+    s = 'sound_files'
 
     # Graph Data
     velocity_history = []
@@ -175,14 +180,19 @@ class Car:
         text_gear = font.render('Gear: ' + str(Car.gear), 1, (255,255,255))
         screen.blit(text_gear, (2 * Game.WIDTH/3 + 10, Row3))
 
-# Initialise Joysticks
-pygame.joystick.init()
-joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
-
 # Initialize pygame
 pygame.init()
 screen = pygame.display.set_mode((Game.WIDTH, Game.HEIGHT))
 clock = pygame.time.Clock()
+
+# Initialise Joysticks
+pygame.joystick.init()
+joysticks = [pygame.joystick.Joystick(x) for x in range(pygame.joystick.get_count())]
+
+# Initialise the Mixer
+pygame.mixer.init()
+music = pygame.mixer.music.load(os.path.join(Car.s, 'front_1000.wav'))
+pygame.mixer.music.play(-1)
 
 # Create a Car object
 car = Car(100, Game.HEIGHT - 100, 50, 50)
@@ -201,10 +211,10 @@ while running:
         #     if event.key in [pygame.K_LEFT, pygame.K_RIGHT]:
         #         cube.acceleration = 0.0
 
-    # Update the cube
+    # Update the Car
     car.update()
 
-    # Draw the cube
+    # Draw the Car
     screen.fill((0, 0, 0))
     car.draw()
 
