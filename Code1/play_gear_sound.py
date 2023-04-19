@@ -1,8 +1,6 @@
 import numpy as np
-import keyboard
 import sounddevice as sd
-from gear_sound_functions import compress_signal
-from Functions import gear_change_check
+from Code1.Functions import GearFunctions
 
 
 # Define the rpm range and corresponding frequency range
@@ -41,7 +39,7 @@ def rpm_load(throttleinput, speedinput, graphdata, currentgear):
     kSpeedVoltage += speedinput
     points[1, 0] = kThrottleVoltage
     points[1, 1] = kSpeedVoltage
-    gear_change_check(points, graphdata, currentgear)
+    GearFunctions.gear_change_check(points, graphdata, currentgear)
 
     if kRpm > 3000:
         kRpm = 3000

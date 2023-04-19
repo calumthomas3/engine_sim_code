@@ -1,59 +1,20 @@
-# Main file for the engine simulation
-import pandas as pd
-from checkfiles import check_files
-
-
-# Define the input files and the gear change data
-input_files = ('sound_files/front_1000.wav',
-               'sound_files/front_1500.wav',
-               'sound_files/front_2000.wav',
-               'sound_files/front_2500.wav',
-               'sound_files/front_3000.wav'
-               )
-
-# Import Gear Change Data
-gear_change_data = '2D_gear_change_profile.xlsx'
-
-# Set the number of rpm sections
-min_rpm = 1000
-max_rpm = 3000
-rpm_sectioning = 5
-
-# Block Write Method
-# Check if the files exist for engine running
-file_checkers = check_files(input_files, gear_change_data, min_rpm, max_rpm, rpm_sectioning)
-
-# Set Up the engine
-print('\nSet Up Engine')
-
-rpm_signals = {}
-for i in range(len(file_checkers)):
-    file_checker = file_checkers[i]
-    # rpm_signals[file_checker] = pd.read_csv(file_checkers[i], header=None).values.flatten()
-graphdata = pd.read_csv('geardata.csv')
-
-# Run the engine
-print('\nRunning Engine')
-
 import os.path
 
 import pygame
-import math
 import numpy as np
 import matplotlib.pyplot as plt
-from Functions import GearFunctions
 
 
 # Define Functions
-def P_curve(input_value, MASS):  # EV Performance Curve
-
-    input_value_mph = input_value * 2.23694 / 1.000001658
+def P_curve(input_value, MASS): # EV Performance Curve
+    
+    input_value_mph = input_value*2.23694/1.000001658
     # This is a curve of x-axis speed in mph and y-axis max acceleration available in Gs
     # Performance curve with reduction gear:
     points = [(0, 0.53), (32.68, 0.513), (33.27, 0.5), (41, 0.4), (52.68, 0.3), (71.71, 0.2), (101, 0.1), (137, 0.0)]
 
     # Performance curve without reduction gear:
-    # points = [(0, 0.247), (71.71, 0.2), (101, 0.1), (137, 0.0)]
+    #points = [(0, 0.247), (71.71, 0.2), (101, 0.1), (137, 0.0)]
 
     # Split the points into separate lists for x and y values
     x, y = zip(*points)
@@ -65,7 +26,7 @@ def P_curve(input_value, MASS):  # EV Performance Curve
     # Check if the intercept is within the range of the x values
     if min(x) <= input_value_mph <= max(x):
         # Find the y-intercept and convert to thrust in N
-        thrust = polynomial(input_value_mph) * 9.81 * MASS
+        thrust = polynomial(input_value_mph)*9.81*MASS
         return thrust
     else:
         return 0
@@ -77,9 +38,9 @@ class Game:
     WIDTH = 1000
     HEIGHT = 500
     FPS = 60
-    GRAVITY = 9.81  # m/s^2
+    GRAVITY = 9.81 # m/s^2
     PI = 3.14159
-    AIRDENSITY = 1.293  # kg/m^3
+    AIRDENSITY = 1.293 # kg/m^3
 
 
 # Define the Car class
@@ -87,7 +48,7 @@ class Car:
     # Define Car Variables
     MASS = 1275.0  # vehicle mass kg
     DRAGCOEFF = 0.45
-    FRONTAREA = 0.1257 * 0.1613  # ms^2
+    FRONTAREA = 0.1257 * 0.1613 # ms^2
 
     # Initialise at Idle - Gear = 1
     gear = 1
@@ -104,13 +65,13 @@ class Car:
         # Physics
         self.x = x
         self.y = y
-        self.displacement = 0.0  # m
-        self.velocity = 0.0  # m/s
-        self.acceleration = 0.0  # m/s^2
-        self.throttle = 0.0  # between 0 = 0%, 1 = 100%
-        self.force_thrust = 0.0  # N
-        self.force_drag = 0.0  # N
-        self.force_net = 0.0  # N
+        self.displacement = 0.0 # m
+        self.velocity = 0.0     # m/s
+        self.acceleration = 0.0 # m/s^2
+        self.throttle = 0.0     # between 0 = 0%, 1 = 100%
+        self.force_thrust = 0.0 # N
+        self.force_drag = 0.0   # N
+        self.force_net = 0.0    # N
 
         # Visualisation
         self.width = width
@@ -126,21 +87,21 @@ class Car:
         self.force_thrust = self.throttle * P_curve(self.velocity, Car.MASS)
 
         # Calculate drag force
-        rolling_resistance = 0.27 * self.velocity  # estimate
+        rolling_resistance = 0.27 * self.velocity # estimate
         self.force_drag = rolling_resistance + 0.5 * Game.AIRDENSITY * Car.DRAGCOEFF * Car.FRONTAREA * self.velocity ** 2
 
         # Calculate acceleration
         self.force_net = self.force_thrust - self.force_drag
-        self.acceleration = self.force_net / Car.MASS
+        self.acceleration = self.force_net/Car.MASS
 
         # Update velocity
-        self.velocity += self.acceleration / Game.FPS
+        self.velocity += self.acceleration/Game.FPS
         if self.velocity < 0:
             self.velocity = 0
 
         # Store the current velocity
-        Car.velocity_history.append(self.velocity * 2.23694)
-        Car.velocity_time.append(pygame.time.get_ticks() / 1000)
+        Car.velocity_history.append(self.velocity*2.23694)
+        Car.velocity_time.append(pygame.time.get_ticks()/1000)
         Car.throttle_history.append(self.throttle)
 
         # Send to gear comparison
@@ -149,7 +110,7 @@ class Car:
         # gear = GearFunctions.gear_change_check(positions, graphdata, Car.gear)
 
         # Update position
-        self.x += self.velocity * Game.FPS / 100
+        self.x += self.velocity*Game.FPS/100
         self.displacement += self.velocity * Game.FPS
 
         # Check for boundary collision
@@ -173,21 +134,22 @@ class Car:
         # text = font.render(str(round(self.velocity, 2)), 1, (255, 255, 255))
         # screen.blit(text, (self.x + self.width / 2 - text.get_width() / 2, self.y + self.height / 2 - text.get_height() / 2))
 
-        # Counter Row 1
+        #Counter Row 1
         Row1 = 10
         # Add Throttle Counter
         text_throttle = font.render('Throttle: ' + str(round(self.throttle, 3)), 1, (255, 255, 255))
         screen.blit(text_throttle, (10, Row1))
 
         # Add Velocity Counter
-        text_vel = font.render('Velocity (MPH): ' + str(round(self.velocity * 2.23694, 3)), 1, (255, 255, 255))
-        screen.blit(text_vel, (Game.WIDTH / 3 + 10, Row1))
+        text_vel = font.render('Velocity (MPH): ' + str(round(self.velocity*2.23694, 3)), 1, (255, 255, 255))
+        screen.blit(text_vel, (Game.WIDTH/3 + 10, Row1))
 
         # Add Acceleration Counter
         text_acc = font.render('Acceleration (m/s^2): ' + str(round(self.acceleration, 3)), 1, (255, 255, 255))
-        screen.blit(text_acc, (2 * Game.WIDTH / 3 + 10, Row1))
+        screen.blit(text_acc, (2 * Game.WIDTH/3 + 10, Row1))
+        
 
-        # Counter Row 2
+        #Counter Row 2
         Row2 = 50
         # Add Thrust Counter
         text_thrust = font.render('Thrust (N): ' + str(round(self.force_thrust, 2)), 1, (255, 255, 255))
@@ -195,26 +157,26 @@ class Car:
 
         # Add Drag Counter
         text_drag = font.render('Drag (N): ' + str(round(self.force_drag, 2)), 1, (255, 255, 255))
-        screen.blit(text_drag, (Game.WIDTH / 3 + 10, Row2))
+        screen.blit(text_drag, (Game.WIDTH/3 + 10, Row2))
 
         # Add Net Force Counter
         text_net = font.render('Net (N): ' + str(round(self.force_net, 2)), 1, (255, 255, 255))
-        screen.blit(text_net, (2 * Game.WIDTH / 3 + 10, Row2))
+        screen.blit(text_net, (2 * Game.WIDTH/3 + 10, Row2))
 
-        # Counter Row 3
+
+        #Counter Row 3
         Row3 = 90
         # Add a Displacement Counter
         text_displacement = font.render('Distance (m): ' + str(round(self.displacement, 2)), 1, (255, 255, 255))
         screen.blit(text_displacement, (10, Row3))
 
         # Add a Time Counter
-        text_time = font.render('Time (s): ' + str(round(pygame.time.get_ticks() / 1000, 2)), 1, (255, 255, 255))
-        screen.blit(text_time, (Game.WIDTH / 3 + 10, Row3))
+        text_time = font.render('Time (s): ' + str(round(pygame.time.get_ticks()/1000, 2)), 1, (255, 255, 255))
+        screen.blit(text_time, (Game.WIDTH/3 + 10, Row3))
 
         # Add a Gear Counter
-        text_gear = font.render('Gear: ' + str(Car.gear), 1, (255, 255, 255))
-        screen.blit(text_gear, (2 * Game.WIDTH / 3 + 10, Row3))
-
+        text_gear = font.render('Gear: ' + str(Car.gear), 1, (255,255,255))
+        screen.blit(text_gear, (2 * Game.WIDTH/3 + 10, Row3))
 
 # Initialize pygame
 pygame.init()
@@ -264,6 +226,7 @@ plt.xlabel('Time (s)')
 plt.ylabel('Throttle (%)')
 plt.title('Velocity of the cube over time')
 plt.savefig('velocity_plot.png')
+
 
 # Quit pygame
 pygame.quit()

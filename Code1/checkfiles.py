@@ -1,7 +1,9 @@
 # File for storing check function for calling setup if required
+# Import packages
 import os.path
-from Setup import setup
 import numpy as np
+# Import Functions
+from Code1.Setup import setup
 
 
 def check_files(input_files, gear_change_data, min_rpm, max_rpm, rpm_sectioning):
@@ -28,4 +30,4 @@ def check_files(input_files, gear_change_data, min_rpm, max_rpm, rpm_sectioning)
     else:
         print('\nGear Change Data found')
 
-    return file_checkers
+    return check
