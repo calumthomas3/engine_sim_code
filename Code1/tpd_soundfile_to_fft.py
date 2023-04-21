@@ -51,7 +51,7 @@ def stream_signals(frequency_files, min_rpm, max_rpm, rpm_sectioning):
 
     # Define the sample rate and duration of the signal
     sr = 44100
-    duration = 1
+    duration = 100
 
     for i in range(len(frequency_files)):
         df = pd.read_csv(frequency_files[i], header=None)
