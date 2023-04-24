@@ -11,7 +11,7 @@ def check_files(input_files, gear_change_data, min_rpm, max_rpm, rpm_sectioning)
     check = []
     file_checkers = np.arange(min_rpm, max_rpm, rpm_sectioning, dtype=int)
     for file_checker in file_checkers:
-        check.append('sound_files/' + input_files[0][:-18] + str(file_checker) + '_sound.wav')
+        check.append('sound_files/' + str(file_checker) + '_sound.wav')
 
     for i in range(len(check)):
         if not os.path.isfile(check[i]):

@@ -14,7 +14,6 @@ class Car:
     FRONTAREA = 0.1257 * 0.1613  # ms^2
 
     # Initialise at Idle - Gear = 1
-    gear = 1
 
     # Define Sound File where sounds are found
     s = 'sound_files'
@@ -36,6 +35,7 @@ class Car:
         self.force_drag = 0.0  # N
         self.force_net = 0.0  # N
         self.rpm = 1000 # rpm
+        self.gear = 1
 
         # Visualisation
         self.width = width
@@ -71,7 +71,7 @@ class Car:
         # Send to gear comparison
         positions = np.array([[lastthrottle * 100, lastvelocity * 1.6], [self.throttle * 100, self.velocity * 1.6]])
 
-        gear = GearFunctions.gear_change_check(positions, graphdata, Car.gear)
+        self.gear = GearFunctions.gear_change_check(positions, graphdata, self.gear)
 
         # Update position
         self.x += self.velocity * Game.FPS / 100
@@ -137,5 +137,5 @@ class Car:
         screen.blit(text_time, (Game.WIDTH / 3 + 10, Row3))
 
         # Add a Gear Counter
-        text_gear = font.render('Gear: ' + str(Car.gear), 1, (255, 255, 255))
+        text_gear = font.render('Gear: ' + str(self.gear), 1, (255, 255, 255))
         screen.blit(text_gear, (2 * Game.WIDTH / 3 + 10, Row3))
