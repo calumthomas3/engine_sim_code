@@ -6,6 +6,7 @@ import numpy as np
 from Code2.game_class import Game
 from Code2.Functions import GearFunctions, ImportFunctions
 
+
 # Define the Car class
 class Car:
     # Define Car Variables

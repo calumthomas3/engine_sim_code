@@ -22,6 +22,8 @@ class ImportFunctions:
         for downshift in downshifts:
             dlines_dir[str(gear)] = pd.read_excel(xls, downshift)
             gear = gear + 1
+        print(ulines_dir)
+        print(dlines_dir)
         return ulines_dir, dlines_dir
 
     # A Function which imports the performance curve provided by Patrimony EV

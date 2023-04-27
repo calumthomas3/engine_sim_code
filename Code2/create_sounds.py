@@ -42,7 +42,7 @@ def synth_sound_files(created_rpm, rpm_1, rpm_2):
     rpm_low = rpm_low + created_rpm/100
     rpm_high = rpm_high + created_rpm/100
 
-    # Take first three seconds of the audio
+    # Take first two seconds of the audio
     rpm_low = rpm_low[500:2500]
     rpm_high = rpm_high[500:2500]
 

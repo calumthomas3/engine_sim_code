@@ -111,4 +111,3 @@ pygame.quit()
 
 plt.show()
 
-# output vehicle velocity and throttle to other programs
