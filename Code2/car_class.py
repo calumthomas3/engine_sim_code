@@ -11,8 +11,8 @@ from Code2.Functions import GearFunctions, ImportFunctions
 class Car:
     # Define Car Variables
     MASS = 1275.0  # vehicle mass kg
-    DRAGCOEFF = 0.45
-    FRONTAREA = 0.1257 * 0.1613  # ms^2
+    DRAGCOEFF = 0.55
+    FRONTAREA = 0.1257 * 0.1613  # m^2
 
     # Initialise at Idle - Gear = 1
 
@@ -53,30 +53,34 @@ class Car:
 
         # Calculate drag force
         rolling_resistance = 0.27 * self.velocity  # estimate
-        self.force_drag = rolling_resistance + 0.5 * Game.AIRDENSITY * Car.DRAGCOEFF * Car.FRONTAREA * self.velocity ** 2
+        self.force_drag = rolling_resistance + 0.5 \
+                          * Game.AIRDENSITY \
+                          * Car.DRAGCOEFF \
+                          * Car.FRONTAREA \
+                          * self.velocity ** 2
 
         # Calculate acceleration
         self.force_net = self.force_thrust - self.force_drag
         self.acceleration = self.force_net / Car.MASS
-        print(self.acceleration, self.force_net)
+
         # Update velocity
         self.velocity += self.acceleration / Game.FPS
         if self.velocity < 0:
             self.velocity = 0
+
+        # Send to gear comparison
+        # positions = np.array([[lastthrottle * 100, lastvelocity], [self.throttle * 100, self.velocity]])
+
+        # self.gear = GearFunctions.gear_change_check(positions, graphdata, self.gear)
 
         # Store the current velocity
         Car.velocity_history.append(self.velocity)
         Car.velocity_time.append(pygame.time.get_ticks() / 1000)
         Car.throttle_history.append(self.throttle * 100)
 
-        # Send to gear comparison
-        positions = np.array([[lastthrottle * 100, lastvelocity * 1.6], [self.throttle * 100, self.velocity * 1.6]])
-
-        self.gear = GearFunctions.gear_change_check(positions, graphdata, self.gear)
-
         # Update position
-        self.x += self.velocity * Game.FPS / 100
-        self.displacement += self.velocity * Game.FPS
+        self.x += self.velocity / (Game.FPS * 100)
+        self.displacement += self.velocity / Game.FPS
 
         # Check for boundary collision
         if self.x < 0:
@@ -106,7 +110,7 @@ class Car:
         screen.blit(text_throttle, (10, Row1))
 
         # Add Velocity Counter
-        text_vel = font.render('Velocity (MPH): ' + str(round(self.velocity * 2.23694, 3)), 1, (255, 255, 255))
+        text_vel = font.render('Velocity (MPH): ' + str(round(self.velocity, 3)), 1, (255, 255, 255))
         screen.blit(text_vel, (Game.WIDTH / 3 + 10, Row1))
 
         # Add Acceleration Counter

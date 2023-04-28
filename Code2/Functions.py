@@ -101,7 +101,7 @@ class GearFunctions:
     @staticmethod
     def gear_change_check(points, graphdata, currentgear):
         # Plot the input line
-        input_line = LineString([(points[0, 0], points[0, 1]), (points[1, 0], points[1, 1])])
+        input_line = LineString([(points[0, 1], points[0, 0]), (points[1, 1], points[1, 0])])
         plt.plot(*input_line.xy, label='Input Line')
 
         # Check for intersection points
@@ -116,11 +116,12 @@ class GearFunctions:
             if intersection_point.geom_type == "Point":
                 x, y = intersection_point.x, intersection_point.y
                 intersection_points.append((x, y))
-                # ax.scatter(x, y, marker="x", s=100, color="green", label=f"Intersection {i}")
+                plt.scatter(x, y, marker="x", s=100, color="green", label=f"Intersection {i}")
                 new_gear = rule
                 if new_gear != currentgear:
                     print('change to ' + str(new_gear))
                     currentgear = new_gear
+
         return currentgear
 
         # print('intersection points: ' + str(intersection_points))

@@ -47,11 +47,13 @@ def find_rpm(min_rpm, max_rpm, maxspeed, downshift_dir, upshift_dir):
     yrange = np.arange(0, 101, 1)
 
     # Store coordinates within Lines Directory
-    planes = {}
+    rpm_planes = {}
+    gear_planes = {}
 
     # Set Up discrete coordinates for the lines
     for i in range(1, no_of_gears + 1):
         z = np.ones((maxspeed + 1, 101))
+        p = np.zeros((maxspeed + 1, 101))
         z = z * min_rpm
         down = gears[str(i) + ' down']
         up = gears[str(i) + ' up']
@@ -103,21 +105,30 @@ def find_rpm(min_rpm, max_rpm, maxspeed, downshift_dir, upshift_dir):
         uparray = np.append(uparray, [end], axis=0)
         uparray = np.delete(uparray, 0, axis=0)
 
+
         # Create and plot lookup tables for rpm.
         for j in range(downarray.shape[1]):
             z[int(downarray[j, 0]), int(downarray[j, 1])] = min_rpm
+            p[int(downarray[j, 0]), int(downarray[j, 1])] = i
         for j in range(uparray.shape[1]):
             z[int(uparray[j, 0]), int(uparray[j, 1])] = max_rpm
-        for j in range(np.size(yrange) - 1):
+            p[int(uparray[j, 0]), int(uparray[j, 1])] = i
+        for j in range(np.size(yrange)):
             diff = int(uparray[j, 0]) - int(downarray[j, 0])
             gap = (max_rpm - min_rpm) / diff
             for k in range(int(downarray[j, 0]) + 1, int(uparray[j, 0]) - 1):
                 z[k, j] = z[k - 1, j] + gap
+                p[k, j] = i
+
 
         # Save z as an output plane
         z = np.swapaxes(z, 0, 1)
-        planes[str(i) + " gear"] = z
+        rpm_planes[str(i) + " gear"] = z
         print(np.shape(z))
+
+        # Save p as an output plane
+        p = np.swapaxes(p, 0, 1)
+        gear_planes[str(i) + " gear"] = p
 
     # Plot as test.
 
@@ -129,8 +140,8 @@ def find_rpm(min_rpm, max_rpm, maxspeed, downshift_dir, upshift_dir):
     m = np.zeros([101, maxspeed + 1])
     print(np.shape(m))
     # All planes together
-    for plane in planes:
-        m += planes[plane]
+    for rpm_plane in rpm_planes:
+        m += rpm_planes[rpm_plane]
 
 
     plt.contourf(X, Y, m, 10)
@@ -139,10 +150,18 @@ def find_rpm(min_rpm, max_rpm, maxspeed, downshift_dir, upshift_dir):
     plt.xlabel("Speed")
     plt.ylabel("Throttle")
     plt.title("Gear Contour Graph")
-    plt.show()
 
-    # for plane in planes:
-    #     plt.contourf(X, Y, planes[plane], 10)
+    # for plane in rpm_planes:
+    #     plt.contourf(X, Y, rpm_planes[plane], 10)
+    #     plt.colorbar()
+    #     plt.xlabel("Speed")
+    #     plt.ylabel("Throttle")
+    #     plt.title(plane)
+    #     plt.show()
+    #     plt.close()
+    #
+    # for plane in gear_planes:
+    #     plt.contourf(X, Y, gear_planes[plane], 1)
     #     plt.colorbar()
     #     plt.xlabel("Speed")
     #     plt.ylabel("Throttle")
@@ -150,5 +169,4 @@ def find_rpm(min_rpm, max_rpm, maxspeed, downshift_dir, upshift_dir):
     #     plt.show()
     #     plt.close()
 
-
-    return planes
+    return rpm_planes, gear_planes

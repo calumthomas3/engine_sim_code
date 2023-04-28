@@ -49,8 +49,9 @@ file_checkers = check_files(input_files, gear_change_data, min_rpm, max_rpm, rpm
 print('\nSet Up Engine')
 
 ulines_dir, dlines_dir = ImportFunctions.import_gear_change(gear_change_data)
+rpm_planes, gear_planes = find_rpm(min_rpm, max_rpm, maxspeed, dlines_dir, ulines_dir)
 graphdata = GearFunctions.gear_change_graph(ulines_dir, dlines_dir)
-rpm_planes = find_rpm(min_rpm, max_rpm, maxspeed, dlines_dir, ulines_dir)
+
 
 # Run the engine
 print('\nRunning Engine')
@@ -77,37 +78,44 @@ while running:
         #       cube.acceleration = 0.0
 
     # Update the Car
+
     car.update(graphdata)
 
     # Draw the Car
     screen.fill((0, 0, 0))
     car.draw(screen)
 
+    # Find car gear
+    gear_total = 0
+    for gear_plane in gear_planes:
+        gear_total += gear_planes[gear_plane][round(car.throttle * 100), round(car.velocity)]
+    if gear_total == car.gear + 1:
+        car.gear += 1
+    if gear_total == car.gear - 1:
+        car.gear -= 1
+
     # Find car rpm and round to nearest 5
-    car.rpm = rpm_planes[str(car.gear) + ' gear'][round(car.throttle), round(car.velocity)]
-    print(car.rpm)
-    car.rpm = round(car.rpm/5) * 5
-    print(car.rpm)
+    car.rpm = rpm_planes[str(int(car.gear)) + ' gear'][round(car.throttle * 100), round(car.velocity)]
+    car.rpm = round(car.rpm / 5) * 5
+
     # Play the sounds
-    if car.rpm != prev_rpm:
-        pygame.mixer.music.load('sound_files/' + str(prev_rpm + 5) + '_sound.wav')
-        pygame.mixer.music.play(-1)
-        prev_rpm = prev_rpm + 5
+    print('sound_files/' + str(int(car.rpm)) + '_sound.wav')
+    pygame.mixer.music.load('sound_files/' + str(int(car.rpm)) + '_sound.wav')
+    pygame.mixer.music.play(-1)
 
     # Update the screen
     pygame.display.flip()
-    Game.FPS = prev_rpm/240
+    Game.FPS = car.rpm/240
     clock.tick(Game.FPS)
 
-# Plot the velocity over time
-plt.plot(Car.velocity_time, Car.throttle_history)
+# Quit pygame
+pygame.quit()
+
+plt.plot(Car.velocity_history, Car.throttle_history)
 plt.xlabel('Velocity (kmph)')
 plt.ylabel('Throttle (%)')
 plt.title('Velocity of the cube over time')
 plt.savefig('velocity_plot.png')
-
-# Quit pygame
-pygame.quit()
 
 plt.show()
 
