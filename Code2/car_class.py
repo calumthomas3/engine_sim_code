@@ -58,16 +58,16 @@ class Car:
         # Calculate acceleration
         self.force_net = self.force_thrust - self.force_drag
         self.acceleration = self.force_net / Car.MASS
-
+        print(self.acceleration, self.force_net)
         # Update velocity
         self.velocity += self.acceleration / Game.FPS
         if self.velocity < 0:
             self.velocity = 0
 
         # Store the current velocity
-        Car.velocity_history.append(self.velocity * 2.23694)
+        Car.velocity_history.append(self.velocity)
         Car.velocity_time.append(pygame.time.get_ticks() / 1000)
-        Car.throttle_history.append(self.throttle)
+        Car.throttle_history.append(self.throttle * 100)
 
         # Send to gear comparison
         positions = np.array([[lastthrottle * 100, lastvelocity * 1.6], [self.throttle * 100, self.velocity * 1.6]])

@@ -51,7 +51,8 @@ def find_rpm(min_rpm, max_rpm, maxspeed, downshift_dir, upshift_dir):
 
     # Set Up discrete coordinates for the lines
     for i in range(1, no_of_gears + 1):
-        z = np.zeros((maxspeed + 1, 101))
+        z = np.ones((maxspeed + 1, 101))
+        z = z * min_rpm
         down = gears[str(i) + ' down']
         up = gears[str(i) + ' up']
         print(down)
@@ -138,9 +139,16 @@ def find_rpm(min_rpm, max_rpm, maxspeed, downshift_dir, upshift_dir):
     plt.xlabel("Speed")
     plt.ylabel("Throttle")
     plt.title("Gear Contour Graph")
-
     plt.show()
-    plt.close()
 
-    for plane in planes:
+    # for plane in planes:
+    #     plt.contourf(X, Y, planes[plane], 10)
+    #     plt.colorbar()
+    #     plt.xlabel("Speed")
+    #     plt.ylabel("Throttle")
+    #     plt.title(plane)
+    #     plt.show()
+    #     plt.close()
+
+
     return planes

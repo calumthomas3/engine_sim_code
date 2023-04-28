@@ -30,7 +30,7 @@ class ImportFunctions:
     @staticmethod
     def import_p_curve(input_value, MASS):  # EV Performance Curve
 
-        input_value_mph = input_value * 2.23694 / 1.000001658
+        input_value_mph = input_value / 1.6
         # This is a curve of x-axis speed in mph and y-axis max acceleration available in Gs
         # Performance curve with reduction gear:
         points = [(0, 0.53), (32.68, 0.513), (33.27, 0.5), (41, 0.4), (52.68, 0.3), (71.71, 0.2), (101, 0.1),

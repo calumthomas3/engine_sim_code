@@ -71,7 +71,7 @@ while running:
             running = False
         elif event.type == pygame.JOYAXISMOTION:
             if event.axis == 0:
-                car.throttle = event.value
+                car.throttle = (event.value + 1) / 2
         # elif event.type == pygame.KEYUP:
         #   if event.key in [pygame.K_LEFT, pygame.K_RIGHT]:
         #       cube.acceleration = 0.0
@@ -84,15 +84,15 @@ while running:
     car.draw(screen)
 
     # Find car rpm and round to nearest 5
-    car.rpm = rpm_planes[str(car.gear) + ' gear'][round(car.velocity * 1.6), round(car.throttle)]
+    car.rpm = rpm_planes[str(car.gear) + ' gear'][round(car.throttle), round(car.velocity)]
+    print(car.rpm)
     car.rpm = round(car.rpm/5) * 5
-
+    print(car.rpm)
     # Play the sounds
     if car.rpm != prev_rpm:
         pygame.mixer.music.load('sound_files/' + str(prev_rpm + 5) + '_sound.wav')
         pygame.mixer.music.play(-1)
         prev_rpm = prev_rpm + 5
-    print(car.rpm)
 
     # Update the screen
     pygame.display.flip()
@@ -101,7 +101,7 @@ while running:
 
 # Plot the velocity over time
 plt.plot(Car.velocity_time, Car.throttle_history)
-plt.xlabel('Time (s)')
+plt.xlabel('Velocity (kmph)')
 plt.ylabel('Throttle (%)')
 plt.title('Velocity of the cube over time')
 plt.savefig('velocity_plot.png')
