@@ -150,23 +150,25 @@ def find_rpm(min_rpm, max_rpm, maxspeed, downshift_dir, upshift_dir):
     plt.xlabel("Speed")
     plt.ylabel("Throttle")
     plt.title("Gear Contour Graph")
+    plt.show()
+    plt.close()
 
-    # for plane in rpm_planes:
-    #     plt.contourf(X, Y, rpm_planes[plane], 10)
-    #     plt.colorbar()
-    #     plt.xlabel("Speed")
-    #     plt.ylabel("Throttle")
-    #     plt.title(plane)
-    #     plt.show()
-    #     plt.close()
-    #
-    # for plane in gear_planes:
-    #     plt.contourf(X, Y, gear_planes[plane], 1)
-    #     plt.colorbar()
-    #     plt.xlabel("Speed")
-    #     plt.ylabel("Throttle")
-    #     plt.title(plane)
-    #     plt.show()
-    #     plt.close()
+    for plane in rpm_planes:
+        plt.contourf(X, Y, rpm_planes[plane], 10)
+        plt.colorbar()
+        plt.xlabel("Speed")
+        plt.ylabel("Throttle")
+        plt.title(plane)
+        plt.show()
+        plt.close()
+
+    for plane in gear_planes:
+        plt.contourf(X, Y, gear_planes[plane], 1)
+        plt.colorbar()
+        plt.xlabel("Speed")
+        plt.ylabel("Throttle")
+        plt.title(plane)
+        plt.show()
+        plt.close()
 
     return rpm_planes, gear_planes

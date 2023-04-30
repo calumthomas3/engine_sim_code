@@ -16,30 +16,35 @@ def create_sounds(sound_files, min_rpm, max_rpm, rpm_sectioning):
 
 
 def synth_sound_files(created_rpm, sound_files):
-    val = np.array(len(sound_files))
+    val = np.array([0] * len(sound_files))
     i = 0
     for sound_file in sound_files:
         val[i] = int(sound_file[18:-4])
         i += 1
-
+    print(val)
     signal = pydub.AudioSegment.empty()
     i = 0
     for sound_file in sound_files:
-        x = pydub.AudioSegment.from_file(sound_file, format="wav")
+        rpm_val = int(val[i])
+        print(rpm_val)
 
         # Speed up/Slow Down Audio samples
-        x.speedup(playback_speed=(created_rpm/val[i]))
+        playback_speed = (created_rpm/rpm_val)
+        print(playback_speed)
+        if 0.6 <= playback_speed <= 1.5:
+            x = pydub.AudioSegment.from_file(sound_file, format="wav")
+            x = x.speedup(playback_speed=playback_speed)
 
-        # Increase Volume across rpm
-        diff = abs(created_rpm - val[i])
-        if diff == 0:
-            x = x + 10
-        else:
-            x = x + 10/diff
+            # Increase Volume across rpm
+            diff = abs(created_rpm - rpm_val)
+            if diff == 0:
+                x = x + 10
+            else:
+                x = x + 10/diff
 
-        x = x[500:2500]
+            x = x[500:2500]
 
-        signal += x
+            signal += x
 
         i += 1
 
