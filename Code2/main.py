@@ -5,7 +5,7 @@ import pygame
 import matplotlib.pyplot as plt
 import sounddevice as sd
 # Import Classes
-from Code2.checkfiles  import check_files
+from Code2.checkfiles import check_files
 from Code2.game_class import Game
 from Code2.car_class import Car
 from Code2.Functions import ImportFunctions, GearFunctions
@@ -13,11 +13,11 @@ from Code2.gear_contour_plot import find_rpm
 
 
 # Define the input files and the gear change data
-input_files = ('sound_files/front_1000.wav',
-               'sound_files/front_1500.wav',
-               'sound_files/front_2000.wav',
-               'sound_files/front_2500.wav',
-               'sound_files/front_3000.wav'
+input_files = ('sound_files/rear_1000.wav',
+               'sound_files/rear_1500.wav',
+               'sound_files/rear_2000.wav',
+               'sound_files/rear_2500.wav',
+               'sound_files/rear_3000.wav'
                )
 
 # Import Gear Change Data
@@ -60,11 +60,36 @@ print('\nRunning Engine')
 car = Car(100, Game.HEIGHT - 100, 50, 50)
 
 print('Playing')
+# Define the idle loop
+prev_rpm = 0
 
-prev_rpm = min_rpm - 5
+idle = True
+while idle:
+    # Handle events
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            idle = False
+            running = False
+        elif event.type == pygame.JOYBUTTONDOWN:
+            idle = False
+            running = True
+        elif event.type == pygame.JOYAXISMOTION:
+            if event.axis == 0:
+                car.throttle = (event.value + 1) / 2
+
+    car.rpm = min_rpm + (max_rpm - min_rpm) * car.throttle
+    car.rpm = round(car.rpm / rpm_sectioning) * rpm_sectioning
+    if car.rpm != prev_rpm:
+        print('sound_files/' + str(int(car.rpm)) + '_sound.wav')
+        pygame.mixer.music.load('sound_files/' + str(int(car.rpm)) + '_sound.wav')
+        pygame.mixer.music.play(-1)
+    prev_rpm = car.rpm
+
+    Game.FPS = car.rpm / 480
+    clock.tick(Game.FPS)
 
 # Define the main loop
-running = True
+
 while running:
     # Handle events
     for event in pygame.event.get():
@@ -96,16 +121,19 @@ while running:
 
     # Find car rpm and round to nearest 5
     car.rpm = rpm_planes[str(int(car.gear)) + ' gear'][round(car.throttle * 100), round(car.velocity)]
-    car.rpm = round(car.rpm / 5) * 5
+    car.rpm = round(car.rpm / rpm_sectioning) * rpm_sectioning
 
     # Play the sounds
-    print('sound_files/' + str(int(car.rpm)) + '_sound.wav')
-    pygame.mixer.music.load('sound_files/' + str(int(car.rpm)) + '_sound.wav')
-    pygame.mixer.music.play(-1)
+    if car.rpm != prev_rpm:
+        print('sound_files/' + str(int(car.rpm)) + '_sound.wav')
+        pygame.mixer.music.load('sound_files/' + str(int(car.rpm)) + '_sound.wav')
+        pygame.mixer.music.play(-1)
+
+    prev_rpm = car.rpm
 
     # Update the screen
     pygame.display.flip()
-    Game.FPS = car.rpm/240
+    Game.FPS = car.rpm/480
     clock.tick(Game.FPS)
 
 # Quit pygame

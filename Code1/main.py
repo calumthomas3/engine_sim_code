@@ -5,7 +5,7 @@ import pygame
 import matplotlib.pyplot as plt
 import sounddevice as sd
 # Import Classes
-from Code1.checkfiles  import check_files
+from Code1.checkfiles import check_files
 from Code1.game_class import Game
 from Code1.car_class import Car
 from Code1.Functions import ImportFunctions, GearFunctions
@@ -67,8 +67,26 @@ stream.start()
 
 print('Playing')
 print(rpm_signals)
+# Define the idle loop
+idle = True
+while idle:
+    # Handle events
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            idle = False
+            running = False
+        elif event.type == pygame.CONTROLLER_BUTTON_A:
+            idle = False
+            running = True
+        elif event.type == pygame.JOYAXISMOTION:
+            if event.axis == 0:
+                car.throttle = event.value * 100
+
+
+    # Define Car rpm
+
+
 # Define the main loop
-running = True
 while running:
     # Handle events
     for event in pygame.event.get():
