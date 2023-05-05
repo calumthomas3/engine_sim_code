@@ -1,10 +1,9 @@
 # Main file for the engine simulation
 # Import packages
-import pandas as pd
 import pygame
 import matplotlib.pyplot as plt
-import sounddevice as sd
-# Import Classes
+
+# Import Classes and Functions
 from Code2.checkfiles import check_files
 from Code2.game_class import Game
 from Code2.car_class import Car
@@ -28,6 +27,9 @@ min_rpm = 1000
 max_rpm = 3500
 rpm_sectioning = 5
 maxspeed = 200 # kmph
+
+# Define delay, responsiveness of the throttle and rpm
+delay = 10
 
 # Initialize pygame
 pygame.init()
@@ -61,7 +63,8 @@ car = Car(100, Game.HEIGHT - 100, 50, 50)
 
 print('Playing')
 # Define the idle loop
-prev_rpm = 0
+prev_rpm = min_rpm - 1
+prev_rpm_history = []
 
 idle = True
 while idle:
@@ -69,10 +72,10 @@ while idle:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             idle = False
-            running = False
+            drive = False
         elif event.type == pygame.JOYBUTTONDOWN:
             idle = False
-            running = True
+            drive = True
         elif event.type == pygame.JOYAXISMOTION:
             if event.axis == 0:
                 car.throttle = (event.value + 1) / 2
@@ -80,21 +83,22 @@ while idle:
     car.rpm = min_rpm + (max_rpm - min_rpm) * car.throttle
     car.rpm = round(car.rpm / rpm_sectioning) * rpm_sectioning
     if car.rpm != prev_rpm:
-        print('sound_files/' + str(int(car.rpm)) + '_sound.wav')
-        pygame.mixer.music.load('sound_files/' + str(int(car.rpm)) + '_sound.wav')
+        prev_rpm = prev_rpm + (car.rpm - prev_rpm) / delay
+        prev_rpm = round(prev_rpm / rpm_sectioning) * rpm_sectioning
+        print('sound_files/' + str(int(prev_rpm)) + '_sound.wav')
+        pygame.mixer.music.load('sound_files/' + str(int(prev_rpm)) + '_sound.wav')
         pygame.mixer.music.play(-1)
-    prev_rpm = car.rpm
 
-    Game.FPS = car.rpm / 480
+    Game.FPS = prev_rpm / 480
     clock.tick(Game.FPS)
 
-# Define the main loop
+# Define the Drive loop
 
-while running:
+while drive:
     # Handle events
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            running = False
+            drive = False
         elif event.type == pygame.JOYAXISMOTION:
             if event.axis == 0:
                 car.throttle = (event.value + 1) / 2
@@ -103,7 +107,6 @@ while running:
         #       cube.acceleration = 0.0
 
     # Update the Car
-
     car.update(graphdata)
 
     # Draw the Car
@@ -125,24 +128,27 @@ while running:
 
     # Play the sounds
     if car.rpm != prev_rpm:
-        print('sound_files/' + str(int(car.rpm)) + '_sound.wav')
-        pygame.mixer.music.load('sound_files/' + str(int(car.rpm)) + '_sound.wav')
+        prev_rpm = prev_rpm + (car.rpm - prev_rpm) / delay
+        prev_rpm = round(prev_rpm / rpm_sectioning) * rpm_sectioning
+        print('sound_files/' + str(int(prev_rpm)) + '_sound.wav')
+        pygame.mixer.music.load('sound_files/' + str(int(prev_rpm)) + '_sound.wav')
         pygame.mixer.music.play(-1)
 
-    prev_rpm = car.rpm
+    prev_rpm_history.append(prev_rpm)
 
     # Update the screen
     pygame.display.flip()
-    Game.FPS = car.rpm/480
+    Game.FPS = prev_rpm/480
     clock.tick(Game.FPS)
 
 # Quit pygame
 pygame.quit()
 
-plt.plot(Car.velocity_history, Car.throttle_history)
-plt.xlabel('Velocity (kmph)')
-plt.ylabel('Throttle (%)')
-plt.title('Velocity of the cube over time')
+plt.plot(Car.velocity_time, Car.rpm_history)
+plt.plot(Car.velocity_time, prev_rpm_history)
+plt.xlabel('Time (s)')
+plt.ylabel('RPM (rpm)')
+plt.title('RPM of the Car over time')
 plt.savefig('velocity_plot.png')
 
 plt.show()

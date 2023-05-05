@@ -94,43 +94,5 @@ class GearFunctions:
 
             # Plot the line with appropriate linestyle
             ax.plot([x_start, x_end], [y_start, y_end], linestyle=linestyle, label=label)
-
+            plt.close()
         return graphdata
-
-    # A Function to check the gear graphdata to check if gear is changed
-    @staticmethod
-    def gear_change_check(points, graphdata, currentgear):
-        # Plot the input line
-        input_line = LineString([(points[0, 1], points[0, 0]), (points[1, 1], points[1, 0])])
-        plt.plot(*input_line.xy, label='Input Line')
-
-        # Check for intersection points
-        # Find and plot points of intersection between the input line and transmission lines
-        intersection_points = []
-        for i, data in enumerate(graphdata):
-            line = data['line']
-            rule = data['rule']
-            direction = data['direction']
-            intersecting_line = LineString(line)
-            intersection_point = input_line.intersection(intersecting_line)
-            if intersection_point.geom_type == "Point":
-                x, y = intersection_point.x, intersection_point.y
-                intersection_points.append((x, y))
-                plt.scatter(x, y, marker="x", s=100, color="green", label=f"Intersection {i}")
-                new_gear = rule
-                if new_gear != currentgear:
-                    print('change to ' + str(new_gear))
-                    currentgear = new_gear
-
-        return currentgear
-
-        # print('intersection points: ' + str(intersection_points))
-        #
-        # # Plot the selected points
-        # plt.plot(points[0][0], points[0][1], 'go', label='First Point')
-        # plt.plot(points[1][0], points[1][1], 'ro', label='Second Point')
-        #
-        # # Show the plot and allow the user to select a new input line
-        # plt.legend()
-        # plt.show()
-        # plt.clf()

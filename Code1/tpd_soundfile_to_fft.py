@@ -6,6 +6,8 @@ import pandas as pd
 
 
 def fft_analysis(filename):
+    # The more peaks that are included in the sound file
+    sensitivity = 0.2
     # Load the Sound File
     samplerate, data = wavfile.read(filename)
 
@@ -24,7 +26,7 @@ def fft_analysis(filename):
     plt.title('FFT of Sound File '+str(filename))
     plt.show()
 
-    height_threshold = max(spectrum) * 0.05
+    height_threshold = max(spectrum) * sensitivity
     # Filter the data
     filter_array = np.where(spectrum >= height_threshold)
     spectrum = spectrum[filter_array]
@@ -51,7 +53,7 @@ def stream_signals(frequency_files, min_rpm, max_rpm, rpm_sectioning):
 
     # Define the sample rate and duration of the signal
     sr = 44100
-    duration = 100
+    duration = 10000
 
     for i in range(len(frequency_files)):
         df = pd.read_csv(frequency_files[i], header=None)
@@ -75,6 +77,9 @@ def stream_signals(frequency_files, min_rpm, max_rpm, rpm_sectioning):
 
         elif 2500 < created_rpm <= 3000:
             signal = synth_sound_files(created_rpm, rpm_values[3], rpm_values[4], t)
+
+        else:
+            signal = synth_sound_files(created_rpm, rpm_values[4], rpm_values[4], t)
 
         # Save the signal to a file
 

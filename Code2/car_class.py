@@ -23,6 +23,7 @@ class Car:
     velocity_history = []
     velocity_time = []
     throttle_history = []
+    rpm_history = []
 
     def __init__(self, x, y, width, height):
         # Physics
@@ -43,7 +44,7 @@ class Car:
         self.height = height
         self.color = (255, 255, 255)
 
-    def update(self, graphdata):
+    def update(self):
         # Store previous throttle and velocity
         lastthrottle = self.throttle
         lastvelocity = self.velocity
@@ -68,15 +69,11 @@ class Car:
         if self.velocity < 0:
             self.velocity = 0
 
-        # Send to gear comparison
-        # positions = np.array([[lastthrottle * 100, lastvelocity], [self.throttle * 100, self.velocity]])
-
-        # self.gear = GearFunctions.gear_change_check(positions, graphdata, self.gear)
-
-        # Store the current velocity
+        # Store the current velocity, time and throttle
         Car.velocity_history.append(self.velocity)
         Car.velocity_time.append(pygame.time.get_ticks() / 1000)
         Car.throttle_history.append(self.throttle * 100)
+        Car.rpm_history.append(self.rpm)
 
         # Update position
         self.x += self.velocity / (Game.FPS * 100)
