@@ -106,6 +106,8 @@ while idle:
         signal_block = signal_block.astype('float32')
         stream.write(signal_block)
 
+    car.drawidle(screen)
+
     # Define Car rpm
     Game.FPS = prev_rpm / 480
     clock.tick(Game.FPS)

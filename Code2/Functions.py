@@ -94,5 +94,25 @@ class GearFunctions:
 
             # Plot the line with appropriate linestyle
             ax.plot([x_start, x_end], [y_start, y_end], linestyle=linestyle, label=label)
-            plt.close()
+            # plt.close()
         return graphdata
+
+def live_plotter(x_data, y_data, ulines_dir, dlines_dir, line1, identifier=''):
+    if line1 == []:
+        # this is the call to matplotlib that allows dynamic plotting
+        plt.ion()
+        fig = plt.figure(figsize=(13, 6))
+        ax = fig.add_subplot(111)
+        # create a variable for the line so we can later update it
+        gearlines = GearFunctions.gear_change_graph(ulines_dir, dlines_dir)
+        line1, = ax.plot(x_data, y_data, '-o', alpha=0.8)
+        # update plot label/title
+        plt.ylabel('Y Label')
+        plt.title('Title: {}'.format(identifier))
+        plt.show()
+
+    # after the figure, axis, and line are created, we only need to update the y-data
+    line1.set_data(x_data, y_data)
+    # adjust limits if new data goes beyond bounds
+    if np.min(y_data) <= line1.axes.get_ylim()[0] or np.max(y_data) >= line1.axes.get_ylim()[1]:
+        plt.ylim([np.min(y_data) - np.std(y_data), np.max(y_data) + np.std(y_data)])

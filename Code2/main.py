@@ -89,10 +89,14 @@ while idle:
         pygame.mixer.music.load('sound_files/' + str(int(prev_rpm)) + '_sound.wav')
         pygame.mixer.music.play(-1)
 
+    screen.fill((0, 0, 0))
+    car.drawidle(screen)
+
     Game.FPS = prev_rpm / 480
     clock.tick(Game.FPS)
 
 # Define the Drive loop
+GearFunctions.gear_change_graph(ulines_dir, dlines_dir)
 
 while drive:
     # Handle events
@@ -107,7 +111,7 @@ while drive:
         #       cube.acceleration = 0.0
 
     # Update the Car
-    car.update(graphdata)
+    car.update()
 
     # Draw the Car
     screen.fill((0, 0, 0))
@@ -136,20 +140,29 @@ while drive:
 
     prev_rpm_history.append(prev_rpm)
 
+    # Close graph from previous loop
+
+    # Plot Updating Graph
+    # GearFunctions.gear_change_graph(ulines_dir, dlines_dir)
+    # plt.plot(Car.velocity_history, Car.throttle_history)
+    # plt.xlabel('Velocity (mph)')
+    # plt.ylabel('Throttle (%)')
+    # plt.title('Velocity vs Throttle')
+    # plt.show(block=False)
+
+
     # Update the screen
     pygame.display.flip()
-    Game.FPS = prev_rpm/480
+    Game.FPS = prev_rpm / 480
     clock.tick(Game.FPS)
+
 
 # Quit pygame
 pygame.quit()
 
-plt.plot(Car.velocity_time, Car.rpm_history)
-plt.plot(Car.velocity_time, prev_rpm_history)
-plt.xlabel('Time (s)')
-plt.ylabel('RPM (rpm)')
-plt.title('RPM of the Car over time')
-plt.savefig('velocity_plot.png')
 
-plt.show()
-
+GearFunctions.gear_change_graph(ulines_dir, dlines_dir)
+    plt.plot(Car.velocity_history, Car.throttle_history)
+    plt.xlabel('Velocity (mph)')
+    plt.ylabel('Throttle (%)')
+    plt.title('Velocity vs Throttle')

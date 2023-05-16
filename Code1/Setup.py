@@ -1,9 +1,7 @@
 # Import packages
 import sounddevice
-import pandas as pd
 # Import Functions
 from Code1.tpd_soundfile_to_fft import fft_analysis, stream_signals
-from Code1.Functions import ImportFunctions, GearFunctions
 
 
 def setup(input_files, gear_change_data, min_rpm, max_rpm, rpm_sectioning):

@@ -141,3 +141,52 @@ class Car:
         # Add a Gear Counter
         text_gear = font.render('Gear: ' + str(self.gear), 1, (255, 255, 255))
         screen.blit(text_gear, (2 * Game.WIDTH / 3 + 10, Row3))
+
+    def drawidle(self, screen):
+        pygame.draw.rect(screen, self.color, (self.x, self.y, self.width, self.height))
+        font = pygame.font.Font(None, 36)
+        # Write Speed on cube
+        # text = font.render(str(round(self.velocity, 2)), 1, (255, 255, 255))
+        # screen.blit(text, (self.x + self.width / 2 - text.get_width() / 2, self.y + self.height / 2 - text.get_height() / 2))
+
+        # Counter Row 1
+        Row1 = 10
+        # Add Throttle Counter
+        text_throttle = font.render('Throttle: ' + str(round(self.throttle, 3)), 1, (255, 255, 255))
+        screen.blit(text_throttle, (10, Row1))
+
+        # Add Velocity Counter
+        text_vel = font.render('Velocity (MPH): ' + str(round(self.velocity * 2.23694, 3)), 1, (255, 255, 255))
+        screen.blit(text_vel, (Game.WIDTH / 3 + 10, Row1))
+
+        # Add Acceleration Counter
+        text_acc = font.render('Acceleration (m/s^2): ' + str(round(self.acceleration, 3)), 1, (255, 255, 255))
+        screen.blit(text_acc, (2 * Game.WIDTH / 3 + 10, Row1))
+
+        # Counter Row 2
+        Row2 = 50
+        # Add Thrust Counter
+        text_thrust = font.render('Thrust (N): ' + str(round(self.force_thrust, 2)), 1, (255, 255, 255))
+        screen.blit(text_thrust, (10, Row2))
+
+        # Add Drag Counter
+        text_drag = font.render('Drag (N): ' + str(round(self.force_drag, 2)), 1, (255, 255, 255))
+        screen.blit(text_drag, (Game.WIDTH / 3 + 10, Row2))
+
+        # Add Net Force Counter
+        text_net = font.render('Net (N): ' + str(round(self.force_net, 2)), 1, (255, 255, 255))
+        screen.blit(text_net, (2 * Game.WIDTH / 3 + 10, Row2))
+
+        # Counter Row 3
+        Row3 = 90
+        # Add a Displacement Counter
+        text_displacement = font.render('Distance (m): ' + str(round(self.displacement, 2)), 1, (255, 255, 255))
+        screen.blit(text_displacement, (10, Row3))
+
+        # Add a Time Counter
+        text_time = font.render('Time (s): ' + str(round(pygame.time.get_ticks() / 1000, 2)), 1, (255, 255, 255))
+        screen.blit(text_time, (Game.WIDTH / 3 + 10, Row3))
+
+        # Add a Gear Counter
+        text_gear = font.render('Gear: ' + 'Idle', 1, (255, 255, 255))
+        screen.blit(text_gear, (2 * Game.WIDTH / 3 + 10, Row3))
